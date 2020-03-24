@@ -7,7 +7,7 @@ Use:
 
 ```
 cd /opt
-git clont --depth=1 https://github.com/wojiushixiaobai/jms_install.git
+git clone --depth=1 https://github.com/wojiushixiaobai/jms_install.git
 cd jms_install
 cp config_example.conf config.conf
 vi config.conf
