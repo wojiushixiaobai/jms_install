@@ -5,19 +5,23 @@ Jumpserver 安装脚本
 
 Use:
 
-$ cd /opt
-$ git clont --depth=1 https://github.com/wojiushixiaobai/jms_install.git
-$ cd jms_install
-$ ./jmsctl -h
-
+```
+cd /opt
+git clont --depth=1 https://github.com/wojiushixiaobai/jms_install.git
+cd jms_install
+cp config_example.conf config.conf
+vi config.conf
+./jmsctl -h
+```
 Install
-
-$ sh jmsctl install
-
+```
+sh jmsctl install
+```
 Uninstall
-
-$ sh jmsctl uninstall
-
+```
+sh jmsctl uninstall
+```
 Help
-
-$ sh jmsctl -h
+```
+sh jmsctl -h
+```
