@@ -11,17 +11,18 @@ git clont --depth=1 https://github.com/wojiushixiaobai/jms_install.git
 cd jms_install
 cp config_example.conf config.conf
 vi config.conf
-./jmsctl -h
+chmod +x ./jmsctl.sh
+./jmsctl.sh -h
 ```
 Install
 ```
-sh jmsctl install
+./jmsctl.sh install
 ```
 Uninstall
 ```
-sh jmsctl uninstall
+./jmsctl.sh uninstall
 ```
 Help
 ```
-sh jmsctl -h
+./jmsctl.sh -h
 ```
