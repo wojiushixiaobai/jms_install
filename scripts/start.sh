@@ -1,12 +1,20 @@
 #!/usr/bin/env bash
 #
 
-if [ ! "$(systemctl status mariadb | grep running)" ]; then
-    systemctl start mariadb
+BASE_DIR=$(dirname "$0")
+PROJECT_DIR=$(dirname $(cd $(dirname "$0");pwd))
+source ${PROJECT_DIR}/config.conf
+
+if [ $DB_HOST == 127.0.0.1 ]; then
+    if [ ! "$(systemctl status mariadb | grep running)" ]; then
+        systemctl start mariadb
+    fi
 fi
 
-if [ ! "$(systemctl status redis | grep running)" ]; then
-    systemctl start redis
+if [ $REDIS_HOST == 127.0.0.1 ]; then
+    if [ ! "$(systemctl status redis | grep running)" ]; then
+        systemctl start redis
+    fi
 fi
 
 if [ ! "$(systemctl status jms_core | grep running)" ]; then
