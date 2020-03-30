@@ -47,8 +47,13 @@ pip install -r $install_dir/jumpserver/requirements/requirements.txt || {
 systemctl start jms_core
 
 docker run --name jms_koko -d -p $ssh_port:2222 -p 127.0.0.1:5000:5000 -e CORE_HOST=http://$Server_IP:8080 -e BOOTSTRAP_TOKEN=$BOOTSTRAP_TOKEN --restart=always wojiushixiaobai/jms_koko:$Upgrade_Version
-
 docker run --name jms_guacamole -d -p 127.0.0.1:8081:8080 -e JUMPSERVER_SERVER=http://$Server_IP:8080 -e BOOTSTRAP_TOKEN=$BOOTSTRAP_TOKEN --restart=always wojiushixiaobai/jms_guacamole:$Upgrade_Version
+
+cd $install_dir
+rm -rf $install_dir/luna*
+wget -O $install_dir/luna.tar.gz http://demo.jumpserver.org/download/luna/$Upgrade_Version/luna.tar.gz
+tar -xf $install_dir/luna.tar.gz -C $install_dir
+rm -rf $install_dir/luna.tar.gz
 
 sed -i "s/Version=$Version/Version=$Upgrade_Version/g" ${PROJECT_DIR}/config.conf
 echo -e "\033[31m >>> 已升级版本至 $Upgrade_Version <<< \033[0m"
