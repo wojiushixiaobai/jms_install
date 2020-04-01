@@ -5,7 +5,13 @@ BASE_DIR=$(dirname "$0")
 PROJECT_DIR=$(dirname $(cd $(dirname "$0");pwd))
 source ${PROJECT_DIR}/config.conf
 
+if [ ! -d "$install_dir/jumpserver" ]; then
+    echo -e "\033[31m jumpserver 未安装或者目录不正确 \033[0m"
+    exit 1
+fi
+
 Upgrade_Version=$(curl -s -L http://demo.jumpserver.org/download/latest)
+
 if [ $Version == $Upgrade_Version ]; then
     echo -e "\033[31m $Version 已是最新版本 \033[0m"
     exit 0
@@ -24,12 +30,12 @@ systemctl stop jms_core
 
 if [ ! -d "$jumpserver_backup/jumpserver" ]; then
     cp $install_dir/jumpserver $jumpserver_backup/ -r
+    echo -e "\033[31m >>> 已备份文件到 $jumpserver_backup <<< \033[0m"
 fi
 if [ ! -f "$jumpserver_backup/$DB_NAME.sql" ]; then
     mysqldump -h$DB_HOST -P$DB_PORT -u$DB_USER -p$DB_PASSWORD $DB_NAME > $jumpserver_backup/$DB_NAME.sql
+    echo -e "\033[31m >>> 已备份数据库到 $jumpserver_backup <<< \033[0m"
 fi
-
-echo -e "\033[31m >>> 已备份文件到 $jumpserver_backup <<< \033[0m"
 
 cd $install_dir/jumpserver
 git pull || {
