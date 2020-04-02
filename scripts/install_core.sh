@@ -63,7 +63,6 @@ function config_core() {
 function start_core() {
     if [ ! -f "/usr/lib/systemd/system/jms_core.service" ]; then
         cp $BASE_DIR/service/jms_core.service /usr/lib/systemd/system/
-        chmod 755 /usr/lib/systemd/system/jms_core.service
         if [ $install_dir != "/opt" ]; then
             sed -i "s@/opt@$install_dir@g" /usr/lib/systemd/system/jms_core.service
         fi

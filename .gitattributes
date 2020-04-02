@@ -3,3 +3,4 @@
 *.jpg       -text
 *.sh        text eol=lf
 *.py        eol=lf
+*.conf      text eol=lf
