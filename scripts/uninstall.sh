@@ -5,6 +5,8 @@ BASE_DIR=$(dirname "$0")
 PROJECT_DIR=$(dirname $(cd $(dirname "$0");pwd))
 source ${PROJECT_DIR}/config.conf
 
+echo -e "\033[31m 准备从系统中卸载 jumpserver \033[0m"
+
 if [ ! "$(systemctl status nginx | grep running)" ]; then
     systemctl stop nginx
 fi
@@ -37,3 +39,28 @@ if [ $DB_HOST == 127.0.0.1 ]; then
         systemctl stop mariadb
     fi
 fi
+
+if [ "$(systemctl status firewalld | grep running)" ]; then
+    if [ ! "$(firewall-cmd --list-all | grep $http_port)" ]; then
+        firewall-cmd --zone=public --remove-port=$http_port/tcp --permanent
+        firewall-cmd --reload
+    fi
+    if [ ! "$(firewall-cmd --list-all | grep $ssh_port)" ]; then
+        firewall-cmd --zone=public --remove-port=$ssh_port/tcp --permanent
+        firewall-cmd --reload
+    fi
+    if [ ! "$(firewall-cmd --list-all | grep 8080)" ]; then
+        firewall-cmd --permanent --remove-rich-rule="rule family="ipv4" source address="172.17.0.0/16" port protocol="tcp" port="8080" accept"
+        firewall-cmd --reload
+    fi
+fi
+
+if [ "$(getenforce)" != "Disabled" ]; then
+    if [ "$http_port" != "80" ]; then
+        semanage port -d -t http_port_t -p tcp $http_port || true
+    fi
+fi
+
+echo -e "\033[31m 已经成功清理 jumpserver 相关文件 \033[0m"
+echo -e "\033[31m 请自行卸载 docker nginx redis mariadb 服务 \033[0m"
+echo -e "\033[31m yum -y docker-ce nginx redis mariadb-server mariadb-devel mariadb \033[0m"

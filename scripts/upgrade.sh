@@ -39,14 +39,14 @@ fi
 
 cd $install_dir/jumpserver
 git pull || {
-    echo "获取 jumpserver 仓库更新失败"
+    echo "\033[31m 获取 jumpserver 仓库更新失败 \033[0m"
     exit 1
 }
 
 source $install_dir/py3/bin/activate
 pip install --upgrade pip setuptools
 pip install -r $install_dir/jumpserver/requirements/requirements.txt || {
-    echo "升级 python 依赖失败"
+    echo "\033[31m 升级 python 依赖失败 \033[0m"
     exit 1
 }
 
@@ -55,11 +55,17 @@ systemctl start jms_core
 docker run --name jms_koko -d -p $ssh_port:2222 -p 127.0.0.1:5000:5000 -e CORE_HOST=http://$Server_IP:8080 -e BOOTSTRAP_TOKEN=$BOOTSTRAP_TOKEN --restart=always wojiushixiaobai/jms_koko:$Upgrade_Version
 docker run --name jms_guacamole -d -p 127.0.0.1:8081:8080 -e JUMPSERVER_SERVER=http://$Server_IP:8080 -e BOOTSTRAP_TOKEN=$BOOTSTRAP_TOKEN --restart=always wojiushixiaobai/jms_guacamole:$Upgrade_Version
 
+if [ ! -d "$PROJECT_DIR/$Upgrade_Version" ]; then
+    mkdir -p $PROJECT_DIR/$Upgrade_Version
+fi
+
 cd $install_dir
 rm -rf $install_dir/luna*
-wget -O $install_dir/luna.tar.gz http://demo.jumpserver.org/download/luna/$Upgrade_Version/luna.tar.gz
-tar -xf $install_dir/luna.tar.gz -C $install_dir
-rm -rf $install_dir/luna.tar.gz
+
+if [ ! -f "$PROJECT_DIR/$Upgrade_Version/luna.tar.gz" ]; then
+    wget -O $PROJECT_DIR/$Upgrade_Version/luna.tar.gz http://demo.jumpserver.org/download/luna/$Upgrade_Version/luna.tar.gz
+fi
+tar -xf $PROJECT_DIR/$Upgrade_Version/luna.tar.gz -C $install_dir
 
 sed -i "s/Version=$Version/Version=$Upgrade_Version/g" ${PROJECT_DIR}/config.conf
 echo -e "\033[31m >>> 已升级版本至 $Upgrade_Version <<< \033[0m"
