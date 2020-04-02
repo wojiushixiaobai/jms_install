@@ -34,6 +34,7 @@ function prepare_install() {
     if [ $? -ne 0 ];then
         yum install -y gcc
     fi
+    yum update -y
     if [ ! -d "$PROJECT_DIR/$Version" ]; then
         mkdir -p $PROJECT_DIR/$Version
     fi
