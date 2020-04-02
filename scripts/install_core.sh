@@ -5,6 +5,10 @@ BASE_DIR=$(dirname "$0")
 PROJECT_DIR=$(dirname $(cd $(dirname "$0");pwd))
 source ${PROJECT_DIR}/config.conf
 
+function install_python() {
+    yum -y install python36 python36-devel
+}
+
 function download_core() {
     if [ ! -f "$PROJECT_DIR/$Version/jumpserver.tar.gz" ]; then
         wget -O $PROJECT_DIR/$Version/jumpserver.tar.gz http://demo.jumpserver.org/download/jumpserver/$Version/jumpserver.tar.gz
@@ -14,7 +18,6 @@ function download_core() {
 
 function prepare_install() {
     yum -y install $(cat $install_dir/jumpserver/requirements/rpm_requirements.txt)
-    yum -y install python36 python36-devel
     if [ ! -d "$install_dir/py3" ]; then
         python3.6 -m venv $install_dir/py3
     fi
@@ -84,6 +87,10 @@ function install_core() {
 }
 
 function main() {
+    which python3.6 >/dev/null 2>&1
+    if [ $? -ne 0 ];then
+        install_python
+    fi
     if [ ! -d "$install_dir/jumpserver" ]; then
         install_core
     fi

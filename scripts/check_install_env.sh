@@ -49,7 +49,6 @@ else
   echo "[OK]"
 fi
 
-
 #内存检测
 echo -ne "内存检测 \t\t........................ "
 memTotal=`cat /proc/meminfo | grep MemTotal | awk '{print $2}'`
